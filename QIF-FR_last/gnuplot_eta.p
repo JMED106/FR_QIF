@@ -1,0 +1,4 @@
+set key left;
+set terminal postscript eps enhanced color
+set output "fr_vs_eta.eps"
+plot "./fr_vs_eta_sigma-0.0000_1.dat" w p pt 7 title "{/Symbol s} = 0.0", "./fr_vs_eta_sigma-0.1000_1.dat" w p pt 7 title "{/Symbol s} = 0.1", "./fr_vs_eta_sigma-0.5000_1.dat" w p pt 7 title "{/Symbol s} = 0.5", "./fr_vs_eta_sigma-0.8000_1.dat" w p pt 7 title "{/Symbol s} = 0.8", sqrt(x/2.0 + 0.5*sqrt(x*x+0.0*0.0))/(pi) linecolor rgb "red" notitle, sqrt(x/2.0 + 0.5*sqrt(x*x+0.1*0.1))/(pi) linecolor rgb "green" notitle, sqrt(x/2.0 + 0.5*sqrt(x*x+0.5*0.5))/(pi) linecolor rgb "blue" notitle, sqrt(x/2.0 + 0.5*sqrt(x*x+0.8*0.8))/(pi) linecolor rgb "magenta" notitle;
