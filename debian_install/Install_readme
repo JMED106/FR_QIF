@@ -1,0 +1,30 @@
+#### README ####
+
+Installation instructions.
+
+ 1. Set execute permission to the installation script:
+    chmod +x INSTALL.bash
+ 2. In the simulation directory:
+    ./INSTALL.bash
+ 3. For ploting is necessary to install both R and Gnuplot. 
+    Press y or Y for installing.
+
+ 4. The installation file will create two folders:
+    4.1. v-parallel contains parallel version of the program.
+    4.2. v-sequential contains sequential version of the program.
+
+ 5. Change to the desired version folder and run the program:
+    ./prtype_64p.exe
+
+ 6. For debugging use option -dX, where X es the level of debugging.
+    ./prtype_64p.exe -d2
+ 
+ 7. More options can be passed. See input.conf file for the syntax.
+    Example:
+	./prtype_64p.exe N=5000 E=1 e=0.0 d=0.3 t=0.01 T=1000 -d2
+
+    The simulation is done for 5000 neurons, with an input distribution (E=1) of
+    width 0.3 (d=0.3) and center 0.0 (e=0.0). Time step is 0.01 (t=0.01) and
+    simulation time is 1000 (T=1000). In addition to that, debugging is ON.
+
+ 8. Default options can be changed by modifying input.conf file.

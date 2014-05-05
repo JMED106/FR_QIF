@@ -1,0 +1,177 @@
+QIF neurons simulation
+¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+
+ Features:
+
+	- Simulates an ensamble of all-to-all connected QIF neurons.
+	- Simulates the equivalent THETA neuron system.
+	- Simulates FR equations corresponding to QIF system.
+
+ Parameters (typedef struct t_data), stored in d->?:
+	- Number of neurons: 	     N. 
+	  Key: N
+	- Reseting potential:	     vr.
+	- Peak potential: 	     vp.
+	- Synaptic currents: 	     J.
+	- External currents: 	     eta.
+	- Coupling strenght: 	     g.
+	- Reversal potential: 	     v0.
+	- Time of the simulation:    TT.
+	- Time step:  		     dt.
+
+     * Related to the study of the system:
+           - Scan mode (ON/OFF):     scan_mode.
+	         0: The simulation runs once for the selected parameters.
+		 1: Simulation is done for several values of a given parameter.
+		 2: Same as 1 plus the final configuration of each simulation
+		    is taken as the initial configuration of the next one.
+		 3: Same as 2 plus a perturbation is introduced in the middle.
+	   - Number of simulations:  scan_max.
+	     (This number is computed using the first and the last value of
+	      the studied parameter and taking into account the step between
+	      each trial)
+	   - Studied parameter:	     variable.
+	     (an integer).
+	         1: J.
+		 2: eta.
+		 3: g.
+		 4: v0.
+           - Starting value:         min_x.
+	   - Final value:	     max_x.
+	   - Step: 		     dx.
+	   
+	   - Maximum dimension of the raster plot. MaxDim.
+	   - Perturbations:    	     pert.
+	     (if scan_mode == 3 then a perturbation is introduced in order to
+	      study bistability, in than case d->pert = 1;.)
+	      
+	      
+ Simulation options (arguments):
+ 
+   Arguments are entered by default (and necessarily) by the file named
+   "input_data.conf". The file can be edited before compiling to make 
+   permanent changes, or after compiling to mantain default file.
+   
+   Custom arguments can be passed when executing the program using the 
+   following sintax:
+
+   ./name_of_the_executable [letter1]=[value1] [letter2]=[value2] [-d][number]
+   
+   where [letter1], [letter2], ... correspond to the identification letter of
+   the parameters (description shown below), and [value1], [value2], ... to the
+   value given to those paramenters, respectively.
+   [-d] is used fo debugging, and [number] is for the level of debugging.
+
+   As an example: we want to simulate 100 neurons in which the external input
+   is distributed with a "mean value" of 0.1 and width of 0.2 and we want 
+   information about the progress (and debugging):
+
+   ./name_of_the_executable N=100 E=1 e=0.1 d=0.2 -d3
+
+   N corresponds to the number of neurons, E=1 activates de distribution of
+   external input, e=0.1 is the "mean" value of the distribution, and 
+   d=0.2 is the width of the distribution. -d3 activates debugging level 3.
+
+   Possible arguments:
+   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+	- Number of neurons...........................N.
+	  DEFAULT value: 4000.
+	- Type of the initial distribution............i.
+	     0: Uniform distribution between peak and reset values, (vp, vr). 
+	     2: 0 constant distribution (all = 0.0).
+	     4: Lorentzian distribution (centered at 10, widt 5). 
+	  DEFAULT value: 0.
+	- Time step...................................t.
+	  DEFAULT value: 0.005.
+	- Simulation time.............................T.
+	  DEFAULT value: 100.
+
+	- Reseting potential..........................r.
+	  DEFAULT value: -50.
+	- Peak potential..............................p.
+	  DEFAULT value: 50.
+
+	- Synaptic currents...........................j.
+	  DEFAULT value: 0.
+	- Distribution of the synaptic currents.......J.
+	     0: Constant, distribution is OFF.
+	     1: Lorentzian distribution. Center: j, width: m.
+	  DEFAULT value: 0.
+	- Width of the distribution of J..............m.
+	  DEFAULT value: 0.
+
+	- External currents...........................e.
+	  DEFAULT value: 0.
+	- Distribution of the external currents.......E.
+	     0: Constant, distribution is OFF.
+	     1: Lorentzian distribution. Center: e, width: d.
+	  DEFAULT value: 1.
+	- Width of the distribution of eta............d.
+	  DEFAULT value: 0.1.
+
+	- Coupling strength...........................g.
+	  DEFAULT value: 0.1.
+
+	- Reversal potential..........................v.
+	  DEFAULT value: 3.
+	- Distribution of reversal potential..........V.
+	     0: Constant, distribution is OFF.
+	     1: Lorentzian distribution. Center: v, width: B.
+	  DEFAULT value: 1.
+	- Width of the distribution of E..............B.
+	  DEFAULT value: 0.1.
+
+	- Scanning feature (study of parameters)......s.
+	     (see scanning description above).
+	  DEFAULT value: 0.
+	- Parameter to scan...........................z.
+	     (see above).
+	  DEFAULT value: 2.
+	- Starting value of the parameter.............x.
+	  DEFAULT value: -3.
+	- Final value of the parameter................Z.
+	  DEFAULT value: 3.
+	- Increment (step) of the parameter value.....X.
+	  DEFAULT value: 0.1.
+
+	- Amplitude of the perturbation (QIF).........f.
+	  DEFAULT value: 0.
+	- Amplitude of the perturbation (FR eqs.).....P.
+	  DEFAULT value: 0.
+
+
+ Known conceptual errors:
+ 
+	1. Spikes are produced when the voltage reaches infinity, and thus,
+	   it is necessary to take into account the time needed for going from 
+	   the peak potential to infinity: t_p = 1/vp. Analogously, the time 
+	   for the reset potential: t_r = 1/vr.
+
+	   Thus the spike is given t_p after reaching peak potential, and 
+	   the neuron is held at reset potential for a refractoy period t_p 
+	   before it is able to interact again with the system.
+
+	   This may lead to errors related to lose of spikes, i.e. fast neurons
+	   may spike twice in a simulation time step. If we let the time step
+	   to be very little we may be able to catch all the spikes but ...
+	   (I think there is a problem related to small time steps but I don't
+	   remember right now...).
+
+	2. Multiple parameter distribution must be done taking into account
+	   correlation between the distributed parameters for each neuron.
+	   The implemented system creates clearly correlated distributions,
+	   which leads to non-realistic behaviour (non-general).
+
+	   Solution is to build two dimensional distributions, which is 
+	   computational costly but necessary. Thus when simulating 
+	   multiple parameter distribution (2) be aware that the results WILL
+	   NOT BE CORRECT!!!!
+
+	3. To obtain good time series of the firing rate (to compare between 
+ 	   QIF simulation and FR eqs.) is necessary to reduce the time step 
+	   of the QIF simulation so that time needed to do the average is 
+	   similar to the time step of the FR simulation. TO DO.
+
+	4. ...
+
+	
